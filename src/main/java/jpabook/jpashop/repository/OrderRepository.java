@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -103,4 +104,7 @@ public class OrderRepository {
                     " join fetch o.delivery d", Order.class
         ).getResultList();
     }
+
+
+
 }
