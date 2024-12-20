@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.sql.Update;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberApiController {
@@ -41,6 +44,21 @@ public class MemberApiController {
         return new UpdateMemberResponse(id, findMember.getName());
     }
 
+    @GetMapping("/api/v1/members")
+    public List<Member> membersV1() {
+        return memberService.findMembers();
+    }
+
+    @GetMapping("/api/v2/members")
+    public Result memberV2() {
+        List<Member> findMembers = memberService.findMembers();
+        List<MemberDto> collect = findMembers.stream()
+                .map(m -> new MemberDto(m.getName()))
+                .collect(Collectors.toList());
+
+        return new Result(collect.size(), collect);
+    }
+
     @Data
     public static class CreateMemberRequest {
         private String name;
@@ -65,4 +83,18 @@ public class MemberApiController {
         private Long id;
         private String name;
     }
+
+    @Data
+    @AllArgsConstructor
+    public static class Result<T> {
+        private int count;
+        private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class MemberDto {
+        private String name;
+    }
+
 }
